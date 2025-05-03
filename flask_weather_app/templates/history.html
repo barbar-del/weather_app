@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Search History</h2>
+<ul>
+    {% for entry in history %}
+        <li>{{ entry.timestamp }} - {{ entry.location }}{% if entry.resolved %} ({{ entry.resolved }}){% endif %}</li>
+    {% endfor %}
+</ul>
+<div class="actions">
+    <a href="/download-history">Download History</a>
+    <a href="/">Home</a>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="search-container">
+    <form id="search-form" method="post" action="{{ url_for('index') }}">
+        <input type="text" name="location" placeholder="Enter location (e.g., London)" required>
+        <button type="submit">Search</button>
+    </form>
+    <a href="{{ url_for('show_history') }}" class="button">Show History</a>
+</div>
+{% endblock %}

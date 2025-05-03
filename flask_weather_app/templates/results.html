@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if error %}
+  <p class="error-message">{{ error }}</p>
+{% endif %}
+<h2>Weather for {{ location }}</h2>
+{% if days %}
+<table>
+    <thead>
+        <tr>
+            <th>Day</th>
+            <th>Max Temp (°C)</th>
+            <th>Min Temp (°C)</th>
+            <th>Humidity (%)</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for day in days %}
+        <tr>
+            <td>{{ day.datetime }}</td>
+            <td>{{ day.tempmax }}</td>
+            <td>{{ day.tempmin }}</td>
+            <td>{{ day.humidity }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+<div class="actions">
+    <a href="/">&#8592; New Search</a>
+    <br>
+    <a href="/history">View History</a>
+</div>
+{% endblock %}
