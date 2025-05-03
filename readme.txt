@@ -1,72 +1,75 @@
-A simple Flask web application that retrieves and displays a 7-day weather forecast for a given location using the Visual Crossing Weather API, with search history tracking and Prometheus metrics.
+A containerized Flask application that:
 
-## Features
-- Landing page with search bar and buttons for searching and viewing history.
-- Search results displayed in a responsive table showing date, max/min temperature, and humidity.
-- Search history is logged to a JSON file and can be viewed or downloaded.
-- Prometheus metrics endpoint (`/metrics`) exposes:
-  - Request latency histogram
-  - Search counter by location
-  - External API call latency histogram
+- Fetches a 7-day weather forecast for a specified location via the Visual Crossing Weather API
+- Logs search history to a JSON file with timestamps and resolved locations
+- Exposes Prometheus metrics for request latency, search counts by city, and external API latency
 
-## Getting Started
+---
 
-### Prerequisites
-- Docker installed on your host.
-- A Visual Crossing Weather account and API key:
-  1. Go to https://www.visualcrossing.com/  
-  2. Sign up for a free or paid account.  
-  3. Navigate to your profile or API settings to obtain your Weather API key.
+## Prerequisites
 
-### Setup & Build
+- **Docker** installed
+- **Visual Crossing Weather API key**:
+  1. Sign up or log in at https://www.visualcrossing.com/
+  2. Copy your API key from your profile or API settings
 
+---
 
-1. (Optional) Export your API key as an environment variable on the host:
-   ```bash
-   export WEATHER_API_KEY="your_actual_api_key_here"
-   ```
-2. Build the Docker image:
-   ```bash
-   docker build -t flask-weather-app .
-   ```
+## Build the Docker Image
 
-### Running the Container
+```bash
+docker build -t flask-weather-app .
+```
 
-#### 1. Using a host environment variable (recommended)
+---
+
+## Run the Container
+
+### 1. Using a Host Environment Variable (recommended)
+
 ```bash
 docker run -d \
-  -p 5000:5000 \
   --name weather-app \
+  -p 5000:5000 \
   -e WEATHER_API_KEY="$WEATHER_API_KEY" \
   flask-weather-app
 ```
 
-#### 2. Hard-coding your API key inline
+### 2. Hard‑coding the API Key (not recommended)
+
 ```bash
 docker run -d \
-  -p 5000:5000 \
   --name weather-app \
-  -e WEATHER_API_KEY="your_actual_api_key_here" \
+  -p 5000:5000 \
+  -e WEATHER_API_KEY="YOUR_ACTUAL_API_KEY" \
   flask-weather-app
 ```
 
-Once running:
-- Visit `http://localhost:5000` in your browser for the app UI.
-- Scrape metrics via `http://localhost:5000/metrics` for Prometheus ingestion.
+---
 
-## Project Structure
+## Access the Application
+
+- **Web UI:** http://localhost:5000/
+- **Prometheus metrics:** http://localhost:5000/metrics
+
+---
+
+## Project Layout
+
 ```
 root/
-├── Dockerfile
-├── README.md
-└── flask_weather_app/
-    ├── app.py
-    ├── history.py
-    ├── requirements.txt
-    ├── static/css/style.css
-    ├── templates/
+├── Dockerfile            # Builds the container (uses Python 3.10-slim, adds non-root user, installs deps)
+├── README.md             # This documentation file
+└── flask_weather_app/    # Application package
+    ├── __init__.py       # Package marker
+    ├── app.py            # Flask app entrypoint
+    ├── history.py        # Search‐history logic
+    ├── requirements.txt  # Python dependencies
+    ├── static/
+    │   └── css/style.css # Styling for forms and tables
+    ├── templates/        # Jinja2 HTML templates
     │   ├── base.html
     │   ├── index.html
     │   ├── results.html
     │   └── history.html
-    └── search_history.json
+    └── search_history.json  # Auto-created at runtime
